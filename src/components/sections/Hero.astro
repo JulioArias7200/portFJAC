@@ -2,61 +2,53 @@
 import HeroCanvas from '@/components/3d/HeroCanvas.astro';
 ---
 
-<section id="hero" class="relative min-h-[92vh] flex items-center justify-center pt-24 pb-12 overflow-hidden">
-  <!-- 3D Canvas Background -->
+<section id="hero" class="relative min-h-[92vh] flex items-center pt-24 pb-16 overflow-hidden">
+  <!-- 3D Geodesic Canvas (Offset to left 60% with overflow behind content) -->
   <HeroCanvas />
 
-  <div class="relative z-10 max-w-4xl mx-auto px-4 text-center space-y-7">
-    
-    <!-- Badge -->
-    <div class="gsap-hero-badge inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-medium bg-slate-900/80 border border-indigo-500/30 text-indigo-300 backdrop-blur-md shadow-lg shadow-indigo-500/10">
-      <span class="text-xs">⚡</span> Arquitectura Web & Gráficos 3D en Astro
-    </div>
-
-    <!-- Title -->
-    <h1 class="gsap-hero-title text-4xl sm:text-6xl md:text-7xl font-extrabold tracking-tight text-white leading-[1.1]">
-      Ingeniería Creativa & <br />
-      <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-cyan-400 to-indigo-300">
-        Alto Rendimiento Web
-      </span>
-    </h1>
-
-    <!-- Subtitle -->
-    <p class="gsap-hero-subtitle text-base sm:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed">
-      Hola, soy <span class="text-white font-semibold">Julio</span>. Desarrollador especializado en crear aplicaciones web ultrarrápidas combinando la arquitectura de islas de Astro con animaciones cinematográficas en GSAP y Three.js.
-    </p>
-
-    <!-- CTA Buttons -->
-    <div class="gsap-hero-cta flex flex-wrap items-center justify-center gap-3 pt-2">
-      <a
-        href="#projects"
-        class="px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-xs sm:text-sm transition-all duration-200 shadow-lg shadow-indigo-500/25 active:scale-95"
-      >
-        Explorar Proyectos
-      </a>
-      <a
-        href="#contact"
-        class="px-6 py-3 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-white/10 text-slate-200 font-medium text-xs sm:text-sm transition-all duration-200 backdrop-blur-sm active:scale-95"
-      >
-        Hablemos
-      </a>
-    </div>
-
-    <!-- Quick Stats -->
-    <div class="pt-8 max-w-xl mx-auto grid grid-cols-3 gap-3 border-t border-white/10">
-      <div class="gsap-hero-stats p-3 rounded-xl bg-slate-900/50 border border-white/5 backdrop-blur-sm">
-        <div class="text-2xl sm:text-3xl font-bold font-mono text-indigo-400">100%</div>
-        <div class="text-[11px] sm:text-xs text-slate-400 mt-0.5">Core Web Vitals</div>
+  <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+      
+      <!-- Left spacer column (dedicated space for the 60% geodesic globe on desktop) -->
+      <div class="hidden lg:block lg:col-span-6 pointer-events-none min-h-[550px]">
+        <!-- The 3D globe shines through here -->
       </div>
-      <div class="gsap-hero-stats p-3 rounded-xl bg-slate-900/50 border border-white/5 backdrop-blur-sm">
-        <div class="text-2xl sm:text-3xl font-bold font-mono text-cyan-400">+25</div>
-        <div class="text-[11px] sm:text-xs text-slate-400 mt-0.5">Proyectos Entregados</div>
-      </div>
-      <div class="gsap-hero-stats p-3 rounded-xl bg-slate-900/50 border border-white/5 backdrop-blur-sm">
-        <div class="text-2xl sm:text-3xl font-bold font-mono text-emerald-400">+5</div>
-        <div class="text-[11px] sm:text-xs text-slate-400 mt-0.5">Años de Exp.</div>
-      </div>
-    </div>
 
+      <!-- Right Content Column (40-50% with left-alignment and backdrop-blur support for overlap) -->
+      <div class="lg:col-span-6 space-y-7 text-left">
+        
+        <!-- Title -->
+        <h1 class="gsap-hero-title text-4xl sm:text-6xl font-extrabold tracking-tight text-white leading-[1.1]">
+          Ingeniería Creativa & <br />
+          <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-cyan-400 to-indigo-300">
+            Alto Rendimiento Web
+          </span>
+        </h1>
+
+        <!-- Subtitle -->
+        <p class="gsap-hero-subtitle text-base sm:text-lg text-slate-300 max-w-xl leading-relaxed">
+          Hola, soy <span class="text-white font-semibold">Julio</span>. Desarrollador especializado en crear aplicaciones web ultrarrápidas combinando la arquitectura de islas de Astro con animaciones cinematográficas en GSAP y Three.js.
+        </p>
+
+        <!-- CTA Buttons -->
+        <div class="gsap-hero-cta flex flex-wrap items-center gap-3 pt-1">
+          <a
+            href="#projects"
+            class="px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-xs sm:text-sm transition-all duration-200 shadow-lg shadow-indigo-500/25 active:scale-95"
+          >
+            Explorar Proyectos
+          </a>
+          <a
+            href="#contact"
+            class="px-6 py-3 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-white/10 text-slate-200 font-medium text-xs sm:text-sm transition-all duration-200 backdrop-blur-sm active:scale-95"
+          >
+            Hablemos
+          </a>
+        </div>
+
+
+      </div>
+
+    </div>
   </div>
 </section>

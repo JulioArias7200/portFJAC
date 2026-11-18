@@ -25,9 +25,7 @@ export class HeroScene {
   private targetRotationSpeed = 0.0006;
   private lastScrollY = 0;
 
-  // Mouse Interactivity
-  private mouse = { x: 0, y: 0, targetX: 0, targetY: 0 };
-  private boundOnMouseMove!: (e: MouseEvent) => void;
+  // Interactivity & Observers
   private boundOnScroll!: () => void;
   private boundOnResize!: () => void;
   private boundOnThemeChange!: () => void;
@@ -47,7 +45,7 @@ export class HeroScene {
 
     // 1. Scene & Camera
     this.scene = new THREE.Scene();
-    this.camera = new THREE.PerspectiveCamera(55, width / height, 0.1, 100);
+    this.camera = new THREE.PerspectiveCamera(52, width / height, 0.1, 100);
     this.camera.position.z = 10;
 
     // 2. WebGL Renderer
@@ -67,12 +65,10 @@ export class HeroScene {
     this.updateThemeColors();
 
     // 5. Event Listeners
-    this.boundOnMouseMove = this.onMouseMove.bind(this);
     this.boundOnScroll = this.onScroll.bind(this);
     this.boundOnResize = this.onResize.bind(this);
     this.boundOnThemeChange = this.updateThemeColors.bind(this);
 
-    window.addEventListener('mousemove', this.boundOnMouseMove, { passive: true });
     window.addEventListener('scroll', this.boundOnScroll, { passive: true });
     window.addEventListener('resize', this.boundOnResize);
     window.addEventListener('themechange', this.boundOnThemeChange);
@@ -132,11 +128,14 @@ export class HeroScene {
   private createGeodesicSphere(): void {
     this.mainGroup = new THREE.Group();
 
-    // Responsive radius
-    const isMobile = window.innerWidth < 768;
-    const radius = isMobile ? 2.8 : 3.8;
+    const width = window.innerWidth;
+    const isDesktop = width >= 1024;
+    const isMobile = width < 768;
 
-    // Base Geodesic Icosahedron (detail 1 matches the reference photo exactly)
+    //------------------- Tamaño de circunferencia------------------------
+    const radius = isDesktop ? 6 : (isMobile ? 5 : 3.4);
+
+    // Base Geodesic Icosahedron (detail 1 matches the reference photo)
     const baseGeo = new THREE.IcosahedronGeometry(radius, 1);
 
     // A. Wireframe Edges
@@ -165,7 +164,6 @@ export class HeroScene {
       }
     }
 
-    // Small spheres create authentic round circular nodes at 60 FPS
     const sphereRadius = isMobile ? 0.08 : 0.12;
     const sphereGeo = new THREE.SphereGeometry(sphereRadius, 16, 16);
     const sphereMat = new THREE.MeshBasicMaterial({
@@ -189,18 +187,21 @@ export class HeroScene {
     this.nodesInstancedMesh.instanceMatrix.needsUpdate = true;
     this.mainGroup.add(this.nodesInstancedMesh);
 
-    // Initial tilt for perspective
+    // -----------------------------Posicion movil y desktop-----------------------------
+    if (isDesktop) {
+      this.mainGroup.position.x = -4.4;
+      this.mainGroup.position.y = 0;
+    } else {
+      this.mainGroup.position.x = -3;
+      this.mainGroup.position.y = .5;
+    }
+    // -----------------------------Posicion movil y desktop-----------------------------
+
+    // Fixed clean perspective without mouse disturbances
     this.mainGroup.rotation.x = 0.25;
     this.mainGroup.rotation.z = -0.15;
 
     this.scene.add(this.mainGroup);
-  }
-
-  private onMouseMove(e: MouseEvent): void {
-    const halfWidth = window.innerWidth / 2;
-    const halfHeight = window.innerHeight / 2;
-    this.mouse.targetX = (e.clientX - halfWidth) / halfWidth;
-    this.mouse.targetY = -(e.clientY - halfHeight) / halfHeight;
   }
 
   private onScroll(): void {
@@ -222,6 +223,18 @@ export class HeroScene {
 
     this.renderer.setSize(width, height);
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+    // Update horizontal offset according to screen width
+    const isDesktop = width >= 1024;
+    if (this.mainGroup) {
+      if (isDesktop) {
+        this.mainGroup.position.x = -2.4;
+        this.mainGroup.position.y = 0;
+      } else {
+        this.mainGroup.position.x = 0;
+        this.mainGroup.position.y = 0.8;
+      }
+    }
   }
 
   private animate(): void {
@@ -230,20 +243,12 @@ export class HeroScene {
       return;
     }
 
-    // Smooth cursor interpolation (subtle tilt effect)
-    this.mouse.x += (this.mouse.targetX - this.mouse.x) * 0.05;
-    this.mouse.y += (this.mouse.targetY - this.mouse.y) * 0.05;
-
     // Smooth physics: lerp acceleration and deceleration back to base idle speed
     this.currentRotationSpeed += (this.targetRotationSpeed - this.currentRotationSpeed) * 0.12;
     this.targetRotationSpeed += (this.baseRotationSpeed - this.targetRotationSpeed) * 0.04;
 
     // Horizontal clockwise rotation around Y axis
     this.mainGroup.rotation.y += this.currentRotationSpeed;
-
-    // Fixed clean perspective without mouse disturbances
-    this.mainGroup.rotation.x = 0.25;
-    this.mainGroup.rotation.z = -0.15;
 
     this.renderer.render(this.scene, this.camera);
     this.animationFrameId = requestAnimationFrame(this.animate.bind(this));
@@ -253,7 +258,6 @@ export class HeroScene {
     if (this.animationFrameId) {
       cancelAnimationFrame(this.animationFrameId);
     }
-    window.removeEventListener('mousemove', this.boundOnMouseMove);
     window.removeEventListener('scroll', this.boundOnScroll);
     window.removeEventListener('resize', this.boundOnResize);
     window.removeEventListener('themechange', this.boundOnThemeChange);
