@@ -188,13 +188,7 @@ export class HeroScene {
     this.mainGroup.add(this.nodesInstancedMesh);
 
     // -----------------------------Posicion movil y desktop-----------------------------
-    if (isDesktop) {
-      this.mainGroup.position.x = -4.4;
-      this.mainGroup.position.y = 0;
-    } else {
-      this.mainGroup.position.x = -3;
-      this.mainGroup.position.y = .5;
-    }
+    this.updateObjectPosition();
     // -----------------------------Posicion movil y desktop-----------------------------
 
     // Fixed clean perspective without mouse disturbances
@@ -202,6 +196,22 @@ export class HeroScene {
     this.mainGroup.rotation.z = -0.15;
 
     this.scene.add(this.mainGroup);
+  }
+
+  private updateObjectPosition(): void {
+    if (!this.mainGroup) return;
+
+    const width = window.innerWidth;
+    const isDesktop = width >= 1024;
+
+    // Posición fija y consistente tanto en inicio como en resize/scroll
+    if (isDesktop) {
+      this.mainGroup.position.x = -4.4;
+      this.mainGroup.position.y = 0;
+    } else {
+      this.mainGroup.position.x = -3.0;
+      this.mainGroup.position.y = 0.5;
+    }
   }
 
   private onScroll(): void {
@@ -224,17 +234,8 @@ export class HeroScene {
     this.renderer.setSize(width, height);
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-    // Update horizontal offset according to screen width
-    const isDesktop = width >= 1024;
-    if (this.mainGroup) {
-      if (isDesktop) {
-        this.mainGroup.position.x = -2.4;
-        this.mainGroup.position.y = 0;
-      } else {
-        this.mainGroup.position.x = 0;
-        this.mainGroup.position.y = 0.8;
-      }
-    }
+    // Mantiene la posición exacta sin resetear a 0
+    this.updateObjectPosition();
   }
 
   private animate(): void {
