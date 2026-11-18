@@ -1,9 +1,8 @@
 import * as THREE from 'three';
 
 export interface HeroSceneOptions {
-  particleCount?: number;
-  maxDistance?: number;
-  interactiveRadius?: number;
+  radius?: number;
+  detail?: number;
 }
 
 export class HeroScene {
@@ -16,24 +15,28 @@ export class HeroScene {
   private isVisible: boolean = true;
 
   // 3D Objects
-  private particlesMesh!: THREE.Points;
-  private linesMesh!: THREE.LineSegments;
-  private particlePositions!: Float32Array;
-  private particleVelocities: { x: number; y: number; z: number }[] = [];
-  private particleCount: number;
-  private maxDistance: number;
+  private mainGroup!: THREE.Group;
+  private wireMesh!: THREE.LineSegments;
+  private nodesInstancedMesh!: THREE.InstancedMesh;
 
-  // Interactivity
+  // Rotation & Scroll Physics
+  private baseRotationSpeed = 0.0006;
+  private currentRotationSpeed = 0.0006;
+  private targetRotationSpeed = 0.0006;
+  private lastScrollY = 0;
+
+  // Mouse Interactivity
   private mouse = { x: 0, y: 0, targetX: 0, targetY: 0 };
   private boundOnMouseMove!: (e: MouseEvent) => void;
+  private boundOnScroll!: () => void;
   private boundOnResize!: () => void;
+  private boundOnThemeChange!: () => void;
   private observer!: IntersectionObserver;
+  private themeObserver!: MutationObserver;
 
   constructor(container: HTMLElement, canvas: HTMLCanvasElement, options: HeroSceneOptions = {}) {
     this.container = container;
     this.canvas = canvas;
-    this.particleCount = options.particleCount || (window.innerWidth < 768 ? 70 : 140);
-    this.maxDistance = options.maxDistance || 3.8;
 
     this.init();
   }
@@ -44,7 +47,7 @@ export class HeroScene {
 
     // 1. Scene & Camera
     this.scene = new THREE.Scene();
-    this.camera = new THREE.PerspectiveCamera(60, width / height, 0.1, 100);
+    this.camera = new THREE.PerspectiveCamera(55, width / height, 0.1, 100);
     this.camera.position.z = 10;
 
     // 2. WebGL Renderer
@@ -57,16 +60,35 @@ export class HeroScene {
     this.renderer.setSize(width, height);
     this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-    // 3. Particles & Connecting Geometry
-    this.createParticles();
+    // 3. Create Geodesic Wireframe Polyhedron with Circular Nodes
+    this.createGeodesicSphere();
 
-    // 4. Listeners
+    // 4. Initial Theme Colors
+    this.updateThemeColors();
+
+    // 5. Event Listeners
     this.boundOnMouseMove = this.onMouseMove.bind(this);
+    this.boundOnScroll = this.onScroll.bind(this);
     this.boundOnResize = this.onResize.bind(this);
-    window.addEventListener('mousemove', this.boundOnMouseMove);
-    window.addEventListener('resize', this.boundOnResize);
+    this.boundOnThemeChange = this.updateThemeColors.bind(this);
 
-    // 5. Visibility optimization (pauses animation when out of view)
+    window.addEventListener('mousemove', this.boundOnMouseMove, { passive: true });
+    window.addEventListener('scroll', this.boundOnScroll, { passive: true });
+    window.addEventListener('resize', this.boundOnResize);
+    window.addEventListener('themechange', this.boundOnThemeChange);
+
+    // Watch for class changes on <html> (dark / light switch)
+    this.themeObserver = new MutationObserver(() => {
+      this.updateThemeColors();
+    });
+    this.themeObserver.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class'],
+    });
+
+    this.lastScrollY = window.scrollY || window.pageYOffset || 0;
+
+    // 6. Visibility optimization (pauses animation when hero leaves viewport)
     this.observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -80,61 +102,98 @@ export class HeroScene {
     );
     this.observer.observe(this.container);
 
-    // Start loop
+    // Start render loop
     this.animate();
   }
 
-  private createParticles(): void {
-    const positions = new Float32Array(this.particleCount * 3);
-    const range = 14;
+  private isDarkMode(): boolean {
+    return !document.documentElement.classList.contains('light');
+  }
 
-    for (let i = 0; i < this.particleCount; i++) {
-      const i3 = i * 3;
-      positions[i3] = (Math.random() - 0.5) * range;
-      positions[i3 + 1] = (Math.random() - 0.5) * range;
-      positions[i3 + 2] = (Math.random() - 0.5) * range;
+  private updateThemeColors(): void {
+    if (!this.wireMesh || !this.nodesInstancedMesh) return;
 
-      this.particleVelocities.push({
-        x: (Math.random() - 0.5) * 0.012,
-        y: (Math.random() - 0.5) * 0.012,
-        z: (Math.random() - 0.5) * 0.012,
-      });
-    }
+    const dark = this.isDarkMode();
 
-    this.particlePositions = positions;
+    // In Dark Mode: Crisp white lines and bright glowing spheres
+    // In Light Mode: Deep slate/indigo lines and vibrant indigo spheres for high contrast
+    const wireColor = dark ? 0xffffff : 0x334155;
+    const wireOpacity = dark ? 0.85 : 0.75;
+    const nodeColor = dark ? 0xffffff : 0x4f46e5;
 
-    // Points
-    const pointsGeo = new THREE.BufferGeometry();
-    pointsGeo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    const wireMat = this.wireMesh.material as THREE.LineBasicMaterial;
+    wireMat.color.setHex(wireColor);
+    wireMat.opacity = wireOpacity;
 
-    const pointsMat = new THREE.PointsMaterial({
-      color: new THREE.Color('#6366f1'),
-      size: 0.18,
+    const nodeMat = this.nodesInstancedMesh.material as THREE.MeshBasicMaterial;
+    nodeMat.color.setHex(nodeColor);
+  }
+
+  private createGeodesicSphere(): void {
+    this.mainGroup = new THREE.Group();
+
+    // Responsive radius
+    const isMobile = window.innerWidth < 768;
+    const radius = isMobile ? 2.8 : 3.8;
+
+    // Base Geodesic Icosahedron (detail 1 matches the reference photo exactly)
+    const baseGeo = new THREE.IcosahedronGeometry(radius, 1);
+
+    // A. Wireframe Edges
+    const wireGeo = new THREE.WireframeGeometry(baseGeo);
+    const wireMat = new THREE.LineBasicMaterial({
+      color: 0xffffff,
       transparent: true,
       opacity: 0.85,
-      blending: THREE.AdditiveBlending,
     });
+    this.wireMesh = new THREE.LineSegments(wireGeo, wireMat);
+    this.mainGroup.add(this.wireMesh);
 
-    this.particlesMesh = new THREE.Points(pointsGeo, pointsMat);
-    this.scene.add(this.particlesMesh);
+    // B. Circular 3D Nodes at each vertex (Instanced Spheres for perfect circles)
+    const posAttribute = baseGeo.attributes.position;
+    const uniquePositions: THREE.Vector3[] = [];
+    const seen = new Set<string>();
 
-    // Connecting Lines
-    const maxLineSegments = (this.particleCount * (this.particleCount - 1)) / 2;
-    const linePositions = new Float32Array(maxLineSegments * 6);
-    const lineColors = new Float32Array(maxLineSegments * 6);
+    for (let i = 0; i < posAttribute.count; i++) {
+      const x = posAttribute.getX(i);
+      const y = posAttribute.getY(i);
+      const z = posAttribute.getZ(i);
+      const key = `${x.toFixed(3)},${y.toFixed(3)},${z.toFixed(3)}`;
+      if (!seen.has(key)) {
+        seen.add(key);
+        uniquePositions.push(new THREE.Vector3(x, y, z));
+      }
+    }
 
-    const linesGeo = new THREE.BufferGeometry();
-    linesGeo.setAttribute('position', new THREE.BufferAttribute(linePositions, 3));
-    linesGeo.setAttribute('color', new THREE.BufferAttribute(lineColors, 3));
-
-    const linesMat = new THREE.LineBasicMaterial({
-      vertexColors: true,
+    // Small spheres create authentic round circular nodes at 60 FPS
+    const sphereRadius = isMobile ? 0.08 : 0.12;
+    const sphereGeo = new THREE.SphereGeometry(sphereRadius, 16, 16);
+    const sphereMat = new THREE.MeshBasicMaterial({
+      color: 0xffffff,
       transparent: true,
-      blending: THREE.AdditiveBlending,
+      opacity: 0.95,
     });
 
-    this.linesMesh = new THREE.LineSegments(linesGeo, linesMat);
-    this.scene.add(this.linesMesh);
+    this.nodesInstancedMesh = new THREE.InstancedMesh(
+      sphereGeo,
+      sphereMat,
+      uniquePositions.length
+    );
+
+    const matrix = new THREE.Matrix4();
+    uniquePositions.forEach((pos, index) => {
+      matrix.setPosition(pos.x, pos.y, pos.z);
+      this.nodesInstancedMesh.setMatrixAt(index, matrix);
+    });
+
+    this.nodesInstancedMesh.instanceMatrix.needsUpdate = true;
+    this.mainGroup.add(this.nodesInstancedMesh);
+
+    // Initial tilt for perspective
+    this.mainGroup.rotation.x = 0.25;
+    this.mainGroup.rotation.z = -0.15;
+
+    this.scene.add(this.mainGroup);
   }
 
   private onMouseMove(e: MouseEvent): void {
@@ -142,6 +201,16 @@ export class HeroScene {
     const halfHeight = window.innerHeight / 2;
     this.mouse.targetX = (e.clientX - halfWidth) / halfWidth;
     this.mouse.targetY = -(e.clientY - halfHeight) / halfHeight;
+  }
+
+  private onScroll(): void {
+    const currentScroll = window.scrollY || window.pageYOffset || 0;
+    const delta = Math.abs(currentScroll - this.lastScrollY);
+    this.lastScrollY = currentScroll;
+
+    // Dynamically boost horizontal clockwise rotation based on scroll intensity
+    const boost = Math.min(delta * 0.0018, 0.06);
+    this.targetRotationSpeed = this.baseRotationSpeed + boost;
   }
 
   private onResize(): void {
@@ -161,93 +230,20 @@ export class HeroScene {
       return;
     }
 
-    // Smooth cursor interpolation
+    // Smooth cursor interpolation (subtle tilt effect)
     this.mouse.x += (this.mouse.targetX - this.mouse.x) * 0.05;
     this.mouse.y += (this.mouse.targetY - this.mouse.y) * 0.05;
 
-    // Gentle camera parallax
-    this.camera.position.x = this.mouse.x * 1.5;
-    this.camera.position.y = this.mouse.y * 1.5;
-    this.camera.lookAt(0, 0, 0);
+    // Smooth physics: lerp acceleration and deceleration back to base idle speed
+    this.currentRotationSpeed += (this.targetRotationSpeed - this.currentRotationSpeed) * 0.12;
+    this.targetRotationSpeed += (this.baseRotationSpeed - this.targetRotationSpeed) * 0.04;
 
-    // Subtle scene rotation
-    this.particlesMesh.rotation.y += 0.001;
-    this.linesMesh.rotation.y += 0.001;
+    // Horizontal clockwise rotation around Y axis
+    this.mainGroup.rotation.y += this.currentRotationSpeed;
 
-    // Update particles position & velocities
-    const positions = this.particlePositions;
-    const count = this.particleCount;
-    const limit = 7.5;
-
-    for (let i = 0; i < count; i++) {
-      const i3 = i * 3;
-      const v = this.particleVelocities[i];
-
-      positions[i3] += v.x;
-      positions[i3 + 1] += v.y;
-      positions[i3 + 2] += v.z;
-
-      // Bounce at boundary
-      if (Math.abs(positions[i3]) > limit) v.x *= -1;
-      if (Math.abs(positions[i3 + 1]) > limit) v.y *= -1;
-      if (Math.abs(positions[i3 + 2]) > limit) v.z *= -1;
-    }
-
-    this.particlesMesh.geometry.attributes.position.needsUpdate = true;
-
-    // Calculate dynamic connections
-    const linePositions = this.linesMesh.geometry.attributes.position.array as Float32Array;
-    const lineColors = this.linesMesh.geometry.attributes.color.array as Float32Array;
-    let lineIndex = 0;
-    const maxDist = this.maxDistance;
-
-    const baseColor = new THREE.Color('#06b6d4');
-
-    for (let i = 0; i < count; i++) {
-      const i3 = i * 3;
-      const x1 = positions[i3];
-      const y1 = positions[i3 + 1];
-      const z1 = positions[i3 + 2];
-
-      for (let j = i + 1; j < count; j++) {
-        const j3 = j * 3;
-        const x2 = positions[j3];
-        const y2 = positions[j3 + 1];
-        const z2 = positions[j3 + 2];
-
-        const dx = x1 - x2;
-        const dy = y1 - y2;
-        const dz = z1 - z2;
-        const dist = Math.sqrt(dx * dx + dy * dy + dz * dz);
-
-        if (dist < maxDist) {
-          const alpha = 1 - dist / maxDist;
-
-          linePositions[lineIndex * 6] = x1;
-          linePositions[lineIndex * 6 + 1] = y1;
-          linePositions[lineIndex * 6 + 2] = z1;
-
-          linePositions[lineIndex * 6 + 3] = x2;
-          linePositions[lineIndex * 6 + 4] = y2;
-          linePositions[lineIndex * 6 + 5] = z2;
-
-          // Color with alpha intensity
-          lineColors[lineIndex * 6] = baseColor.r * alpha * 0.45;
-          lineColors[lineIndex * 6 + 1] = baseColor.g * alpha * 0.45;
-          lineColors[lineIndex * 6 + 2] = baseColor.b * alpha * 0.45;
-
-          lineColors[lineIndex * 6 + 3] = baseColor.r * alpha * 0.45;
-          lineColors[lineIndex * 6 + 4] = baseColor.g * alpha * 0.45;
-          lineColors[lineIndex * 6 + 5] = baseColor.b * alpha * 0.45;
-
-          lineIndex++;
-        }
-      }
-    }
-
-    this.linesMesh.geometry.setDrawRange(0, lineIndex * 2);
-    this.linesMesh.geometry.attributes.position.needsUpdate = true;
-    this.linesMesh.geometry.attributes.color.needsUpdate = true;
+    // Fixed clean perspective without mouse disturbances
+    this.mainGroup.rotation.x = 0.25;
+    this.mainGroup.rotation.z = -0.15;
 
     this.renderer.render(this.scene, this.camera);
     this.animationFrameId = requestAnimationFrame(this.animate.bind(this));
@@ -258,15 +254,19 @@ export class HeroScene {
       cancelAnimationFrame(this.animationFrameId);
     }
     window.removeEventListener('mousemove', this.boundOnMouseMove);
+    window.removeEventListener('scroll', this.boundOnScroll);
     window.removeEventListener('resize', this.boundOnResize);
+    window.removeEventListener('themechange', this.boundOnThemeChange);
+    this.themeObserver.disconnect();
     this.observer.disconnect();
 
-    this.particlesMesh.geometry.dispose();
-    (this.particlesMesh.material as THREE.Material).dispose();
+    this.wireMesh.geometry.dispose();
+    (this.wireMesh.material as THREE.Material).dispose();
 
-    this.linesMesh.geometry.dispose();
-    (this.linesMesh.material as THREE.Material).dispose();
+    this.nodesInstancedMesh.geometry.dispose();
+    (this.nodesInstancedMesh.material as THREE.Material).dispose();
 
+    this.scene.remove(this.mainGroup);
     this.renderer.dispose();
   }
 }
