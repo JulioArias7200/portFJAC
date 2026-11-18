@@ -12,26 +12,30 @@ export function AnimatedThemeToggler({
   duration = 450,
   ...props
 }: AnimatedThemeTogglerProps) {
-  const [isDark, setIsDark] = useState(true);
+  const [isDark, setIsDark] = useState<boolean>(() => {
+    if (typeof document !== "undefined") {
+      return !document.documentElement.classList.contains("light");
+    }
+    return true;
+  });
 
   useEffect(() => {
-    // Check initial theme from localStorage or system preference
-    const storedTheme = localStorage.getItem("theme");
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const initialDark = storedTheme ? storedTheme === "dark" : prefersDark;
+    const syncWithDOM = () => {
+      const isDocDark = !document.documentElement.classList.contains("light");
+      setIsDark(isDocDark);
+    };
 
-    setIsDark(initialDark);
-    if (initialDark) {
-      document.documentElement.classList.add("dark");
-      document.documentElement.classList.remove("light");
-    } else {
-      document.documentElement.classList.remove("dark");
-      document.documentElement.classList.add("light");
-    }
+    syncWithDOM();
+    window.addEventListener("themechange", syncWithDOM);
+    return () => {
+      window.removeEventListener("themechange", syncWithDOM);
+    };
   }, []);
 
   const toggleTheme = async (event: React.MouseEvent<HTMLButtonElement>) => {
-    const nextDark = !isDark;
+    // Leemos el estado real del DOM directamente en cada clic para garantizar respuesta inmediata
+    const isCurrentlyDark = !document.documentElement.classList.contains("light");
+    const nextDark = !isCurrentlyDark;
     const button = event.currentTarget;
     const rect = button.getBoundingClientRect();
 
@@ -93,7 +97,7 @@ export function AnimatedThemeToggler({
       onClick={toggleTheme}
       aria-label="Toggle Theme"
       className={cn(
-        "relative p-2 rounded-xl border border-white/10 bg-slate-900/80 text-slate-300 hover:text-white hover:border-indigo-500/40 transition-all shadow-md active:scale-95",
+        "relative p-2 rounded-xl border border-white/10 bg-slate-900/80 text-slate-300 hover:text-white hover:border-indigo-500/40 transition-all shadow-md active:scale-95 shrink-0",
         className
       )}
       {...props}

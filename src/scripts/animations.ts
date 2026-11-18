@@ -61,6 +61,8 @@ export function initPortfolioAnimations() {
       );
     }
 
+    const isMobile = window.innerWidth < 768;
+
     gsap.utils.toArray<HTMLElement>('.gsap-work-card').forEach((card, index) => {
       gsap.from(card, {
         scrollTrigger: {
@@ -68,7 +70,8 @@ export function initPortfolioAnimations() {
           start: 'top 85%',
           toggleActions: 'play none none reverse',
         },
-        x: index % 2 === 0 ? -40 : 40,
+        x: isMobile ? 0 : (index % 2 === 0 ? -40 : 40),
+        y: isMobile ? 30 : 0,
         opacity: 0,
         duration: 0.8,
         ease: 'power3.out',
