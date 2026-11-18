@@ -1,0 +1,68 @@
+---
+import Navbar from '@/components/ui/Navbar.astro';
+import Footer from '@/components/ui/Footer.astro';
+import '@/styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = "Julio | Full Stack & Creative Developer",
+  description = "Portafolio de ingeniería de software de alto rendimiento, arquitectura de islas en Astro, Vanilla Three.js y animaciones GSAP.",
+} = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+  </head>
+  <body class="bg-[#090a0f] text-slate-100 antialiased min-h-screen selection:bg-indigo-600 selection:text-white overflow-x-hidden">
+    <Navbar />
+    
+    <main class="relative z-10">
+      <slot />
+    </main>
+
+    <Footer />
+
+    <!-- Client-side GSAP Animations initialization -->
+    <script>
+      import { initPortfolioAnimations } from '../scripts/animations';
+
+      let cleanupAnimations: (() => void) | null = null;
+
+      function startAnimations() {
+        if (cleanupAnimations) {
+          cleanupAnimations();
+        }
+        cleanupAnimations = initPortfolioAnimations();
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', startAnimations);
+      } else {
+        startAnimations();
+      }
+
+      document.addEventListener('astro:before-swap', () => {
+        if (cleanupAnimations) {
+          cleanupAnimations();
+          cleanupAnimations = null;
+        }
+      });
+    </script>
+  </body>
+</html>

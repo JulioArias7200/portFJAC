@@ -1,0 +1,176 @@
+---
+// Projects.astro - Section 5: Projects with 3D Tilt and interactive filtering
+const projects = [
+  {
+    title: "E-Commerce de Ultravelocidad",
+    category: "astro",
+    badge: "Astro + Islands",
+    metric: "100/100 Core Vitals",
+    description: "Plataforma de comercio electrónico con arquitectura de islas híbridas, carrito hidratado de forma diferida con client:visible y pagos integrados con Stripe.",
+    tags: ["Astro", "Tailwind CSS", "Stripe API", "TypeScript"],
+    demoUrl: "#",
+    repoUrl: "https://github.com",
+    year: "2026",
+  },
+  {
+    title: "Visualizador 3D de Órbitas y Satélites",
+    category: "creative",
+    badge: "Three.js / WebGL",
+    metric: "60 FPS Constantes",
+    description: "Simulador interactivo en tiempo real con shaders GLSL personalizados, iluminación física y trayectorias orbitales proyectadas en Canvas.",
+    tags: ["Three.js", "WebGL", "GLSL Shaders", "GSAP"],
+    demoUrl: "#",
+    repoUrl: "https://github.com",
+    year: "2025",
+  },
+  {
+    title: "Dashboard de Telemetría IoT en Vivo",
+    category: "fullstack",
+    badge: "Fullstack & Sockets",
+    metric: "<25ms Latencia",
+    description: "Panel de control industrial con consumo de WebSockets binarios, renderizado de series temporales de alta velocidad y alertas automatizadas.",
+    tags: ["React", "Node.js", "Canvas API", "Redis", "Docker"],
+    demoUrl: "#",
+    repoUrl: "https://github.com",
+    year: "2025",
+  },
+  {
+    title: "Motor de Búsqueda Semántica Vectorial",
+    category: "fullstack",
+    badge: "AI & RAG",
+    metric: "500k Vectores",
+    description: "Microservicio distribuido en Node.js y Qdrant con caché multinivel para recuperación aumentada de contexto en lenguaje natural.",
+    tags: ["TypeScript", "Qdrant", "Redis", "Fastify"],
+    demoUrl: "#",
+    repoUrl: "https://github.com",
+    year: "2026",
+  },
+  {
+    title: "Showcase Creativo Awwwards Style",
+    category: "creative",
+    badge: "GSAP + ScrollTrigger",
+    metric: "Microinteracciones",
+    description: "Diseño experimental para agencia digital con distorsiones de imagen al hacer scroll, transiciones de pantalla cinemáticas y tipografía reactiva.",
+    tags: ["Astro", "GSAP", "Vanilla JS", "Tailwind"],
+    demoUrl: "#",
+    repoUrl: "https://github.com",
+    year: "2025",
+  },
+  {
+    title: "Plantilla de Portafolio JACDev",
+    category: "astro",
+    badge: "Astro + Three.js",
+    metric: "Cero Bloqueo de CPU",
+    description: "Esqueleto de portafolio para desarrolladores creativos que combina Three.js procedural y animaciones GSAP sin sacrificar el rendimiento SEO.",
+    tags: ["Astro", "Three.js", "GSAP", "TypeScript"],
+    demoUrl: "#",
+    repoUrl: "https://github.com",
+    year: "2026",
+  },
+];
+---
+
+<section id="projects" class="py-24 max-w-5xl mx-auto px-4 space-y-12">
+  <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+    <div class="space-y-3">
+      <div class="text-xs font-mono font-semibold tracking-wider uppercase text-cyan-400">04 // Código en Producción</div>
+      <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">Proyectos Destacados</h2>
+      <p class="text-xs sm:text-sm text-slate-400 max-w-md">
+        Pasa el cursor sobre las tarjetas para interactuar en 3D.
+      </p>
+    </div>
+
+    <!-- Category filter buttons -->
+    <div class="flex flex-wrap gap-2 text-xs font-medium" id="projects-filter-bar">
+      <button class="project-filter-btn px-3.5 py-1.5 rounded-lg bg-indigo-600 text-white shadow-md transition-all active:scale-95" data-category="all">
+        Todos
+      </button>
+      <button class="project-filter-btn px-3.5 py-1.5 rounded-lg bg-slate-900 border border-white/10 text-slate-400 hover:text-white transition-all active:scale-95" data-category="astro">
+        Astro
+      </button>
+      <button class="project-filter-btn px-3.5 py-1.5 rounded-lg bg-slate-900 border border-white/10 text-slate-400 hover:text-white transition-all active:scale-95" data-category="creative">
+        Three.js & 3D
+      </button>
+      <button class="project-filter-btn px-3.5 py-1.5 rounded-lg bg-slate-900 border border-white/10 text-slate-400 hover:text-white transition-all active:scale-95" data-category="fullstack">
+        Fullstack
+      </button>
+    </div>
+  </div>
+
+  <!-- Projects Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="projects-items-grid">
+    {projects.map((proj) => (
+      <div
+        class="gsap-project-item project-card tilt-card p-6 rounded-2xl bg-[#0f121e]/90 border border-white/10 hover:border-indigo-500/50 transition-all duration-200 backdrop-blur-sm flex flex-col justify-between space-y-5 shadow-xl group"
+        data-category={proj.category}
+        style="transform-style: preserve-3d; transition: transform 0.15s ease-out, border-color 0.2s ease;"
+      >
+        <div class="space-y-3.5" style="transform: translateZ(25px);">
+          <div class="flex items-center justify-between text-[11px] font-mono">
+            <span class="px-2.5 py-0.5 rounded-md bg-indigo-950/70 border border-indigo-500/30 text-indigo-300">
+              {proj.badge}
+            </span>
+            <span class="text-emerald-400 font-medium">
+              {proj.metric}
+            </span>
+          </div>
+
+          <h3 class="text-base font-bold text-white group-hover:text-indigo-300 transition-colors">
+            {proj.title}
+          </h3>
+
+          <p class="text-xs text-slate-400 leading-relaxed">
+            {proj.description}
+          </p>
+
+          <div class="flex flex-wrap gap-1.5 pt-1">
+            {proj.tags.map((tag) => (
+              <span class="px-2 py-0.5 rounded text-[11px] font-mono bg-slate-900/80 border border-white/5 text-slate-400">
+                {tag}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-white/5 flex items-center justify-between text-xs" style="transform: translateZ(20px);">
+          <div class="flex items-center gap-3">
+            <a href={proj.demoUrl} class="text-indigo-400 hover:text-indigo-300 font-medium transition-colors">
+              Live Demo →
+            </a>
+            <a href={proj.repoUrl} target="_blank" rel="noreferrer" class="text-slate-400 hover:text-white transition-colors">
+              GitHub ↗
+            </a>
+          </div>
+          <span class="text-[11px] font-mono text-slate-500">{proj.year}</span>
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
+
+<script>
+  // Filter logic
+  const filterBtns = document.querySelectorAll<HTMLButtonElement>('.project-filter-btn');
+  const projectItems = document.querySelectorAll<HTMLElement>('.project-card');
+
+  filterBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach((b) => {
+        b.classList.remove('bg-indigo-600', 'text-white');
+        b.classList.add('bg-slate-900', 'text-slate-400');
+      });
+      btn.classList.add('bg-indigo-600', 'text-white');
+      btn.classList.remove('bg-slate-900', 'text-slate-400');
+
+      const cat = btn.getAttribute('data-category');
+      projectItems.forEach((card) => {
+        const itemCat = card.getAttribute('data-category');
+        if (cat === 'all' || itemCat === cat) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  });
+</script>

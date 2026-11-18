@@ -1,0 +1,108 @@
+---
+// Hackathons.astro - Section 6: Hackathons & Competitions with Bento Grid & Counters
+---
+
+<section id="hackathons" class="py-24 max-w-5xl mx-auto px-4 space-y-12">
+  <div class="space-y-3">
+    <div class="text-xs font-mono font-semibold tracking-wider uppercase text-amber-400">05 // Competitividad & Innovación</div>
+    <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">Hackathons & Reconocimientos</h2>
+    <p class="text-xs sm:text-sm text-slate-400 max-w-xl">
+      Desafíos intensos de 24 a 48 horas donde ideamos, construimos y desplegamos prototipos viables bajo presión extrema.
+    </p>
+  </div>
+
+  <!-- Bento Grid Container -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+    
+    <!-- Bento 1: Main Award (Span 2 cols on md) -->
+    <div class="gsap-bento-card md:col-span-2 p-7 rounded-2xl bg-gradient-to-br from-indigo-950/60 via-[#0f121e] to-[#090a0f] border border-indigo-500/30 flex flex-col justify-between space-y-6 shadow-xl relative overflow-hidden group">
+      <div class="absolute -right-8 -top-8 w-36 h-36 bg-indigo-500/10 rounded-full blur-2xl group-hover:bg-indigo-500/20 transition-all duration-500"></div>
+
+      <div class="space-y-3 relative z-10">
+        <div class="flex items-center gap-2">
+          <span class="px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/20 border border-amber-500/40 text-amber-300">
+            🥇 1er Lugar General
+          </span>
+          <span class="text-xs font-mono text-slate-400">Global AI & Web Innovation 2025</span>
+        </div>
+
+        <h3 class="text-xl sm:text-2xl font-bold text-white">
+          NeuroMesh: Diagnóstico Asistido con Edge AI
+        </h3>
+
+        <p class="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-lg">
+          Prototipo de clasificación de imágenes médicas que procesa modelos locales en el navegador mediante WebAssembly y WebGPU, reduciendo el costo de inferencia a cero en servidores externos.
+        </p>
+      </div>
+
+      <div class="flex flex-wrap items-center gap-2 text-xs font-mono text-slate-400 relative z-10">
+        <span class="px-2 py-1 rounded bg-slate-900 border border-white/5">48 Horas</span>
+        <span class="px-2 py-1 rounded bg-slate-900 border border-white/5">WebGPU</span>
+        <span class="px-2 py-1 rounded bg-slate-900 border border-white/5">TypeScript</span>
+        <span class="px-2 py-1 rounded bg-slate-900 border border-white/5">+120 Equipos</span>
+      </div>
+    </div>
+
+    <!-- Bento 2: Stat Box with GSAP Animated Counter -->
+    <div class="gsap-bento-card p-7 rounded-2xl bg-[#0f121e]/90 border border-white/10 flex flex-col justify-between space-y-4 shadow-xl">
+      <div class="text-xs font-mono text-indigo-400 font-semibold uppercase tracking-wider">Métricas Competitivas</div>
+      
+      <div class="space-y-4">
+        <div>
+          <div class="text-4xl font-extrabold font-mono text-white gsap-counter" data-target="8" data-suffix="+">
+            0
+          </div>
+          <div class="text-xs text-slate-400 mt-1">Hackathons Completados</div>
+        </div>
+        <div class="border-t border-white/5 pt-3">
+          <div class="text-4xl font-extrabold font-mono text-cyan-400 gsap-counter" data-target="5" data-suffix="">
+            0
+          </div>
+          <div class="text-xs text-slate-400 mt-1">Podios & Premios Ganados</div>
+        </div>
+      </div>
+
+      <div class="text-[11px] font-mono text-emerald-400 flex items-center gap-1.5 pt-2 border-t border-white/5">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+        62% Tasa de Podio
+      </div>
+    </div>
+
+    <!-- Bento 3: Second Award -->
+    <div class="gsap-bento-card p-6 rounded-2xl bg-[#0f121e]/90 border border-white/10 flex flex-col justify-between space-y-4 shadow-xl">
+      <div class="space-y-2">
+        <div class="flex items-center gap-2">
+          <span class="px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-cyan-500/20 border border-cyan-500/40 text-cyan-300">
+            🥈 2do Lugar
+          </span>
+          <span class="text-[11px] font-mono text-slate-400">GreenCode Hack 2024</span>
+        </div>
+        <h4 class="text-base font-bold text-white">EcoRoute Optimizer</h4>
+        <p class="text-xs text-slate-400 leading-relaxed">
+          Algoritmo de ruteo logístico para minimizar la huella de carbono de flotas eléctricas en tiempo real.
+        </p>
+      </div>
+
+      <div class="text-[11px] font-mono text-slate-400 pt-2 border-t border-white/5">
+        Stack: Node.js, Graphhopper, Mapbox GL
+      </div>
+    </div>
+
+    <!-- Bento 4: Special Mention (Span 2 cols on md) -->
+    <div class="gsap-bento-card md:col-span-2 p-6 rounded-2xl bg-[#0f121e]/90 border border-white/10 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xl">
+      <div class="space-y-1.5 max-w-md">
+        <div class="text-xs font-semibold text-indigo-400 font-mono">🌟 Premio al Mejor Diseño UI/UX</div>
+        <h4 class="text-base font-bold text-white">FinFlow: Visualizador de Finanzas Descentralizadas</h4>
+        <p class="text-xs text-slate-400 leading-relaxed">
+          Reconocido por el jurado por su interfaz con visualizaciones 3D en Three.js fluidas en pantallas móviles.
+        </p>
+      </div>
+
+      <div class="text-xs font-mono text-slate-300 sm:text-right shrink-0">
+        <div class="text-white font-bold">ETH Global Hack</div>
+        <div class="text-slate-400">Edición 2024</div>
+      </div>
+    </div>
+
+  </div>
+</section>

@@ -1,0 +1,42 @@
+---
+// Navbar.astro - Sticky floating navigation bar with Animated Theme Toggler
+import { AnimatedThemeToggler } from '@/components/ui/animated-theme-toggler';
+---
+
+<header class="fixed top-4 inset-x-0 z-50 max-w-5xl mx-auto px-4 pointer-events-none">
+  <div class="pointer-events-auto backdrop-blur-xl bg-[#0e111bd0] border border-white/10 rounded-2xl px-5 py-3 shadow-2xl flex items-center justify-between transition-all">
+    
+    <!-- Brand / Logo -->
+    <a href="#hero" class="flex items-center gap-2.5 group">
+      <div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-600 to-cyan-500 flex items-center justify-center font-bold text-white text-xs shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform">
+        J
+      </div>
+      <div class="text-sm font-semibold tracking-tight text-slate-100">
+        Julio <span class="text-indigo-400 font-mono text-xs">.dev</span>
+      </div>
+    </a>
+
+    <!-- Nav Links (Desktop) -->
+    <nav class="hidden md:flex items-center gap-5 text-xs font-medium text-slate-400">
+      <a href="#about" class="hover:text-white transition-colors">Sobre mí</a>
+      <a href="#work" class="hover:text-white transition-colors">Experiencia</a>
+      <a href="#education" class="hover:text-white transition-colors">Educación</a>
+      <a href="#projects" class="hover:text-white transition-colors">Proyectos</a>
+      <a href="#hackathons" class="hover:text-white transition-colors">Hackathons</a>
+      <a href="#blog" class="hover:text-white transition-colors">Blog</a>
+      <a href="#contact" class="hover:text-white transition-colors">Contacto</a>
+    </nav>
+
+    <!-- Right Controls: Status Badge + Theme Toggler -->
+    <div class="flex items-center gap-3">
+      <span class="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-medium bg-emerald-950/60 border border-emerald-500/30 text-emerald-400">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        Disponible
+      </span>
+
+      <!-- Magic UI Animated Theme Toggler (Isla interactiva con client:load) -->
+      <AnimatedThemeToggler client:load />
+    </div>
+
+  </div>
+</header>

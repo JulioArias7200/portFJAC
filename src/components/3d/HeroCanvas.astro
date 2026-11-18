@@ -1,0 +1,40 @@
+---
+// HeroCanvas.astro - Vanilla Three.js background canvas
+---
+
+<div id="hero-3d-container" class="absolute inset-0 overflow-hidden pointer-events-none z-0">
+  <canvas id="hero-3d-canvas" class="w-full h-full block opacity-75"></canvas>
+</div>
+
+<script>
+  import { HeroScene } from './HeroScene';
+
+  let heroSceneInstance: HeroScene | null = null;
+
+  function initHeroScene() {
+    const container = document.getElementById('hero-3d-container');
+    const canvas = document.getElementById('hero-3d-canvas') as HTMLCanvasElement;
+
+    if (container && canvas) {
+      if (heroSceneInstance) {
+        heroSceneInstance.destroy();
+      }
+      heroSceneInstance = new HeroScene(container, canvas);
+    }
+  }
+
+  // Initialize on DOM load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initHeroScene);
+  } else {
+    initHeroScene();
+  }
+
+  // Handle page cleanups if view transitions exist
+  document.addEventListener('astro:before-swap', () => {
+    if (heroSceneInstance) {
+      heroSceneInstance.destroy();
+      heroSceneInstance = null;
+    }
+  });
+</script>

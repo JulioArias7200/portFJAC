@@ -1,16 +1,50 @@
 ---
+import Layout from '../layouts/Layout.astro';
+import Hero from '@/components/sections/Hero.astro';
+import About from '@/components/sections/About.astro';
+import Work from '@/components/sections/Work.astro';
+import Education from '@/components/sections/Education.astro';
+import Projects from '@/components/sections/Projects.astro';
+import Hackathons from '@/components/sections/Hackathons.astro';
+import BlogSection from '@/components/sections/BlogSection.astro';
+import Contact from '@/components/sections/Contact.astro';
+import { ScrollProgressDemo } from '@/components/ui/scroll-progress-demo';
+import { AnimatedThemeTogglerDemo } from '@/components/ui/animated-theme-toggler-demo';
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout title="Julio | Full Stack & Creative Developer">
+  <!-- Magic UI Scroll Progress Component -->
+  <ScrollProgressDemo client:load />
+
+  <!-- 1. Hero Section -->
+  <Hero />
+
+  <!-- Theme Toggler Demo Container (Magic UI) -->
+  <div class="max-w-5xl mx-auto px-4 -mt-6 mb-6 flex justify-end">
+    <div class="backdrop-blur-md bg-slate-900/60 border border-white/10 rounded-2xl px-4 py-2 flex items-center gap-3 text-xs text-slate-300">
+      <span>Alternar tema:</span>
+      <AnimatedThemeTogglerDemo client:load />
+    </div>
+  </div>
+
+  <!-- 2. About Section -->
+  <About />
+
+  <!-- 3. Work Section -->
+  <Work />
+
+  <!-- 4. Education Section -->
+  <Education />
+
+  <!-- 5. Projects Section -->
+  <Projects />
+
+  <!-- 6. Hackathons Section -->
+  <Hackathons />
+
+  <!-- 7. Blog Section -->
+  <BlogSection />
+
+  <!-- 8. Contact Section -->
+  <Contact />
+</Layout>

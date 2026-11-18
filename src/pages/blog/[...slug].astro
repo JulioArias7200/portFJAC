@@ -1,0 +1,88 @@
+---
+import { getCollection, render } from 'astro:content';
+import Layout from '@/layouts/Layout.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+---
+
+<Layout title={`${post.data.title} | Blog Julio`} description={post.data.description}>
+  <!-- Reading Progress Bar (Top) -->
+  <div id="reading-progress-bar" class="fixed top-0 inset-x-0 h-1 bg-gradient-to-r from-indigo-500 via-cyan-400 to-indigo-400 z-50 origin-left scale-x-0"></div>
+
+  <article class="py-28 max-w-3xl mx-auto px-4 space-y-8">
+    
+    <!-- Back button -->
+    <a href="/#blog" class="inline-flex items-center gap-1.5 text-xs font-mono text-indigo-400 hover:text-indigo-300 transition-colors">
+      ← Volver al inicio
+    </a>
+
+    <!-- Header -->
+    <header class="space-y-4 border-b border-white/10 pb-8">
+      <div class="flex items-center gap-3 text-xs font-mono text-slate-400">
+        <time datetime={post.data.pubDate.toISOString()}>
+          {post.data.pubDate.toISOString().slice(0, 10)}
+        </time>
+        <span>•</span>
+        <span class="text-cyan-400">{post.data.readTime} de lectura</span>
+      </div>
+
+      <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-white leading-tight">
+        {post.data.title}
+      </h1>
+
+      <p class="text-base text-slate-300 leading-relaxed">
+        {post.data.description}
+      </p>
+
+      <div class="flex flex-wrap gap-2 pt-2">
+        {post.data.tags.map((tag: string) => (
+          <span class="px-2.5 py-0.5 rounded-md text-xs font-mono bg-indigo-950/60 border border-indigo-500/30 text-indigo-300">
+            #{tag}
+          </span>
+        ))}
+      </div>
+    </header>
+
+    <!-- Markdown Content Container -->
+    <div class="prose prose-invert prose-indigo max-w-none text-slate-300 text-sm sm:text-base leading-relaxed space-y-6 [&>h1]:text-2xl [&>h1]:font-bold [&>h1]:text-white [&>h2]:text-xl [&>h2]:font-bold [&>h2]:text-white [&>h2]:mt-8 [&>ul]:list-disc [&>ul]:pl-5 [&>ul]:space-y-2 [&>p]:leading-relaxed">
+      <Content />
+    </div>
+
+    <!-- Article Footer -->
+    <div class="pt-12 border-t border-white/10 flex items-center justify-between">
+      <a href="/#blog" class="text-xs font-mono text-indigo-400 hover:underline">
+        ← Volver a todos los artículos
+      </a>
+      <a href="/#contact" class="text-xs font-mono text-slate-400 hover:text-white">
+        ¿Tienes dudas? Escríbeme →
+      </a>
+    </div>
+
+  </article>
+
+  <!-- Native Scroll Progress Listener -->
+  <script>
+    function updateProgress() {
+      const progressBar = document.getElementById('reading-progress-bar');
+      if (!progressBar) return;
+
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+      const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const progress = docHeight > 0 ? scrollTop / docHeight : 0;
+
+      progressBar.style.transform = `scaleX(${progress})`;
+    }
+
+    window.addEventListener('scroll', updateProgress, { passive: true });
+    updateProgress();
+  </script>
+</Layout>
