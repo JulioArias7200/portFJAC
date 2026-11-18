@@ -44,6 +44,17 @@ const {
         }
       })();
     </script>
+
+    <!-- No-JS fallback for hero animation -->
+    <noscript>
+      <style>
+        .gsap-hero-title,
+        .gsap-hero-subtitle,
+        .gsap-hero-cta {
+          opacity: 1 !important;
+        }
+      </style>
+    </noscript>
   </head>
   <body class="bg-[#090a0f] text-slate-100 antialiased min-h-screen selection:bg-indigo-600 selection:text-white overflow-x-clip max-w-full">
     <Navbar />

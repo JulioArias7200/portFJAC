@@ -10,14 +10,12 @@ export function initPortfolioAnimations() {
     // ==========================================
     // 1. HERO ENTRANCE TIMELINE
     // ==========================================
-    const heroTl = gsap.timeline({ defaults: { ease: 'power3.out', duration: 0.9 } });
+    const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
     heroTl
-      .from('.gsap-hero-badge', { y: -20, opacity: 0, delay: 0.1 })
-      .from('.gsap-hero-title', { y: 30, opacity: 0 }, '-=0.6')
-      .from('.gsap-hero-subtitle', { y: 20, opacity: 0 }, '-=0.6')
-      .from('.gsap-hero-cta', { y: 20, opacity: 0, stagger: 0.15 }, '-=0.5')
-      .from('.gsap-hero-stats', { y: 25, opacity: 0, stagger: 0.12 }, '-=0.4');
+      .fromTo('.gsap-hero-title', { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 1 })
+      .fromTo('.gsap-hero-subtitle', { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.9 }, '-=0.7')
+      .fromTo('.gsap-hero-cta', { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 0.8 }, '-=0.6');
 
     // ==========================================
     // 2. ABOUT SECTION - KINETIC TEXT REVEAL
