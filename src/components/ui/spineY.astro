@@ -1,0 +1,50 @@
+---
+// src/components/ui/spineY.astro
+// Riel lateral y Overlay Cinemático SpineY (-90° → 0°)
+---
+
+<!-- Riel guía lateral de 1px continuo de arriba a abajo -->
+<div class="fixed top-0 right-0 bottom-0 w-12 md:w-10 border-l border-slate-900/10 dark:border-white/10 pointer-events-none z-30 hidden md:block" aria-hidden="true"></div>
+
+<!-- Overlay Cinemático de Caracteres SpineY con alto contraste en Light y Dark mode -->
+<div id="spine-char-overlay" class="pointer-events-none fixed inset-0 z-40 overflow-hidden select-none hidden md:block text-slate-900 dark:text-slate-100" aria-hidden="true"></div>
+
+<script>
+  import { initSpineY } from '@/scripts/spineY';
+
+  let cleanupSpine: (() => void) | null = null;
+
+  function startSpine() {
+    if (cleanupSpine) {
+      cleanupSpine();
+      cleanupSpine = null;
+    }
+    cleanupSpine = initSpineY();
+  }
+
+  // 1. Ejecución inmediata en carga inicial
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', startSpine);
+  } else {
+    startSpine();
+  }
+
+  // 2. Soporte para Astro View Transitions
+  document.addEventListener('astro:page-load', startSpine);
+
+  document.addEventListener('astro:before-swap', () => {
+    if (cleanupSpine) {
+      cleanupSpine();
+      cleanupSpine = null;
+    }
+  });
+
+  // 3. Manejo de redimensionado de ventana con debounce
+  let resizeTimer: number;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = window.setTimeout(() => {
+      startSpine();
+    }, 200);
+  });
+</script>

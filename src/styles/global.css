@@ -41,6 +41,9 @@
     background-color: #f8fafc;
     color: #0f172a;
   }
+  html.light #spine-char-overlay {
+    color: #0f172a !important;
+  }
   html.light .bg-\[\#090a0f\] {
     background-color: #f8fafc !important;
   }

@@ -5,11 +5,13 @@ import { cn } from "@/lib/utils";
 interface AnimatedThemeTogglerProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string;
   duration?: number;
+  variant?: "default" | "square" | "circle" | string;
 }
 
 export function AnimatedThemeToggler({
   className,
   duration = 450,
+  variant = "default",
   ...props
 }: AnimatedThemeTogglerProps) {
   const [isDark, setIsDark] = useState<boolean>(() => {
@@ -97,7 +99,8 @@ export function AnimatedThemeToggler({
       onClick={toggleTheme}
       aria-label="Toggle Theme"
       className={cn(
-        "relative p-2 rounded-xl border border-white/10 bg-slate-900/80 text-slate-300 hover:text-white hover:border-indigo-500/40 transition-all shadow-md active:scale-95 shrink-0",
+        "relative p-2 border border-white/10 bg-slate-900/80 text-slate-300 hover:text-white hover:border-indigo-500/40 transition-all shadow-md active:scale-95 shrink-0",
+        variant === "square" ? "rounded-lg" : variant === "circle" ? "rounded-full" : "rounded-xl",
         className
       )}
       {...props}

@@ -119,15 +119,14 @@ export function initPortfolioAnimations() {
       });
     });
 
-    gsap.from('.gsap-project-item', {
+    gsap.from('#projects .space-y-3', {
       scrollTrigger: {
         trigger: '#projects',
-        start: 'top 75%',
+        start: 'top 80%',
         toggleActions: 'play none none reverse',
       },
-      y: 50,
+      y: 30,
       opacity: 0,
-      stagger: 0.18,
       duration: 0.8,
       ease: 'power2.out',
     });

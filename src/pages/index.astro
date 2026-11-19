@@ -8,12 +8,12 @@ import Projects from '@/components/sections/Projects.astro';
 import Hackathons from '@/components/sections/Hackathons.astro';
 import BlogSection from '@/components/sections/BlogSection.astro';
 import Contact from '@/components/sections/Contact.astro';
-import { ScrollProgressDemo } from '@/components/ui/scroll-progress-demo';
+import { ScrollProgress } from '@/components/ui/scroll-progress';
 ---
 
 <Layout title="Julio | Full Stack & Creative Developer">
   <!-- Magic UI Scroll Progress Component -->
-  <ScrollProgressDemo client:load />
+  <ScrollProgress client:load className="top-0 h-1 z-50" />
 
   <!-- 1. Hero Section -->
   <Hero />
