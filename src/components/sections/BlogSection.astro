@@ -8,48 +8,48 @@ const sortedPosts = posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDa
 <section id="blog" class="py-24 max-w-5xl mx-auto px-4 space-y-12">
   <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
     <div class="space-y-3">
-      <div class="text-xs font-mono font-semibold tracking-wider uppercase text-cyan-400">06 // Pensamiento Técnico</div>
-      <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">Blog & Artículos</h2>
-      <p class="text-xs sm:text-sm text-slate-400 max-w-md">
+      <div class="text-xs font-mono font-semibold tracking-wider uppercase text-accent-cyan">06 // Pensamiento Técnico</div>
+      <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-content-primary">Blog & Artículos</h2>
+      <p class="text-xs sm:text-sm text-content-secondary max-w-md">
         Análisis sobre arquitectura frontend, optimización de gráficos 3D y lecciones de ingeniería.
       </p>
     </div>
 
-    <div class="text-xs font-mono text-indigo-400">
+    <div class="text-xs font-mono text-accent-indigo">
       Markdown + Content Collections ✓
     </div>
   </div>
 
   <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
     {sortedPosts.map((post) => (
-      <article class="gsap-blog-card p-6 rounded-2xl bg-[#0f121e]/90 border border-white/10 hover:border-indigo-500/40 hover:-translate-y-1 transition-all duration-300 backdrop-blur-sm flex flex-col justify-between space-y-5 shadow-xl group">
+      <article class="gsap-blog-card p-6 rounded-2xl bg-surface border border-border-subtle hover:border-border-glow hover:-translate-y-1 transition-all duration-300 backdrop-blur-sm flex flex-col justify-between space-y-5 shadow-xl group">
         <div class="space-y-3">
-          <div class="flex items-center justify-between text-[11px] font-mono text-slate-400">
+          <div class="flex items-center justify-between text-[11px] font-mono text-content-muted">
             <span>{post.data.pubDate.toISOString().slice(0, 10)}</span>
-            <span class="text-cyan-400">{post.data.readTime}</span>
+            <span class="text-accent-cyan">{post.data.readTime}</span>
           </div>
 
-          <h3 class="text-base font-bold text-white group-hover:text-indigo-300 transition-colors line-clamp-2">
+          <h3 class="text-base font-bold text-content-primary group-hover:text-accent-indigo transition-colors line-clamp-2">
             <a href={`/blog/${post.id}`} class="hover:underline">
               {post.data.title}
             </a>
           </h3>
 
-          <p class="text-xs text-slate-400 leading-relaxed line-clamp-3">
+          <p class="text-xs text-content-secondary leading-relaxed line-clamp-3">
             {post.data.description}
           </p>
         </div>
 
-        <div class="pt-4 border-t border-white/5 flex items-center justify-between">
+        <div class="pt-4 border-t border-border-subtle flex items-center justify-between">
           <div class="flex flex-wrap gap-1">
             {post.data.tags.slice(0, 2).map((tag: string) => (
-              <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-slate-900 border border-white/5 text-slate-400">
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-surface-card border border-border-subtle text-content-muted">
                 #{tag}
               </span>
             ))}
           </div>
 
-          <a href={`/blog/${post.id}`} class="text-xs font-medium text-indigo-400 group-hover:text-indigo-300 flex items-center gap-1 transition-colors">
+          <a href={`/blog/${post.id}`} class="text-xs font-medium text-accent-indigo hover:underline flex items-center gap-1 transition-colors">
             Leer →
           </a>
         </div>

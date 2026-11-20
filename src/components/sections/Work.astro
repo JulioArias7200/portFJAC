@@ -27,39 +27,39 @@ const experiences = [
 
 <section id="work" class="py-24 max-w-5xl mx-auto px-4 space-y-12">
   <div class="space-y-3">
-    <div class="text-xs font-mono font-semibold tracking-wider uppercase text-cyan-400">02 // Trayectoria Profesional</div>
-    <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">Experiencia Laboral</h2>
-    <p class="text-xs sm:text-sm text-slate-400 max-w-xl">
+    <div class="text-xs font-mono font-semibold tracking-wider uppercase text-accent-cyan">02 // Trayectoria Profesional</div>
+    <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-content-primary">Experiencia Laboral</h2>
+    <p class="text-xs sm:text-sm text-content-secondary max-w-xl">
       Evolución técnica desde el desarrollo de interfaces hasta la arquitectura de sistemas interactivos de alto rendimiento.
     </p>
   </div>
 
-  <div id="work-container" class="relative pl-6 sm:pl-8 border-l border-white/10 space-y-12">
+  <div id="work-container" class="relative pl-6 sm:pl-8 border-l border-line-timeline space-y-12">
     <!-- GSAP Animated Progress Bar inside the timeline border -->
-    <div class="gsap-work-progress absolute left-[-1.5px] top-0 bottom-0 w-[3px] bg-gradient-to-b from-indigo-500 via-cyan-400 to-indigo-600 origin-top"></div>
+    <div class="gsap-work-progress absolute left-[-1.5px] top-0 bottom-0 w-[3px] bg-gradient-to-b from-accent-indigo via-accent-cyan to-accent-indigo origin-top"></div>
 
     {experiences.map((exp) => (
       <div class="gsap-work-card relative group">
         <!-- Node indicator dot -->
-        <div class="absolute -left-[31px] sm:-left-[39px] top-1.5 w-4 h-4 rounded-full bg-slate-950 border-2 border-indigo-400 group-hover:bg-cyan-400 group-hover:scale-125 transition-all duration-300 shadow-md shadow-indigo-500/20"></div>
+        <div class="absolute -left-[31px] sm:-left-[39px] top-1.5 w-4 h-4 rounded-full bg-canvas border-2 border-accent-indigo group-hover:bg-accent-cyan group-hover:scale-125 transition-all duration-300 shadow-md"></div>
 
-        <div class="p-6 rounded-2xl bg-[#0f121e]/80 border border-white/10 hover:border-indigo-500/40 transition-all duration-300 backdrop-blur-sm space-y-4 shadow-lg">
+        <div class="p-6 rounded-2xl bg-surface border border-border-subtle hover:border-border-glow transition-all duration-300 backdrop-blur-sm space-y-4 shadow-lg">
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-            <h3 class="text-lg font-bold text-white group-hover:text-indigo-300 transition-colors">
-              {exp.role} <span class="text-indigo-400 font-normal">@ {exp.company}</span>
+            <h3 class="text-lg font-bold text-content-primary group-hover:text-accent-indigo transition-colors">
+              {exp.role} <span class="text-accent-indigo font-normal">@ {exp.company}</span>
             </h3>
-            <span class="text-xs font-mono text-slate-400 bg-slate-800/60 px-2.5 py-1 rounded-md border border-white/5 w-fit">
+            <span class="text-xs font-mono text-content-muted bg-surface-card px-2.5 py-1 rounded-md border border-border-subtle w-fit">
               {exp.period}
             </span>
           </div>
 
-          <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+          <p class="text-xs sm:text-sm text-content-secondary leading-relaxed">
             {exp.description}
           </p>
 
           <div class="flex flex-wrap gap-1.5 pt-1">
             {exp.tags.map((tag) => (
-              <span class="px-2 py-0.5 rounded text-[11px] font-mono bg-slate-900 border border-white/5 text-slate-400">
+              <span class="px-2 py-0.5 rounded text-[11px] font-mono bg-surface-card border border-border-subtle text-content-muted">
                 {tag}
               </span>
             ))}

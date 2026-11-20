@@ -1,0 +1,193 @@
+---
+// src/components/ui/MobileNavHUD.astro
+// Menú HUD táctil cinemático exclusivo para dispositivos móviles (< 768px)
+
+const SECTIONS = [
+  { id: 'about', idx: '01', label: 'SOBRE MÍ' },
+  { id: 'work', idx: '02', label: 'EXPERIENCIA' },
+  { id: 'education', idx: '03', label: 'EDUCACIÓN' },
+  { id: 'projects', idx: '04', label: 'PROYECTOS' },
+  { id: 'hackathons', idx: '05', label: 'HACKATHONS' },
+  { id: 'blog', idx: '06', label: 'BLOG' },
+  { id: 'contact', idx: '07', label: 'CONTACTO' },
+];
+---
+
+<!-- 1. Botón Disparador Flotante con Telemetría en Vivo (Esquina superior izquierda) -->
+<aside class="fixed top-4 left-4 z-50 md:hidden pointer-events-auto" aria-label="Navegación móvil">
+  <button
+    id="mobile-hud-btn"
+    type="button"
+    aria-expanded="false"
+    aria-controls="mobile-hud-overlay"
+    class="h-10 px-3.5 rounded-xl backdrop-blur-xl bg-surface/90 border border-border-medium shadow-2xl flex items-center gap-2.5 text-xs font-mono font-medium text-content-primary active:scale-95 transition-all cursor-pointer"
+  >
+    <!-- Icono Morphing de dos barras a 'X' -->
+    <div class="w-4 h-3.5 flex flex-col justify-between items-center relative py-0.5">
+      <span id="mobile-bar-top" class="w-full h-0.5 bg-current rounded-full transition-transform duration-300 origin-center"></span>
+      <span id="mobile-bar-bot" class="w-full h-0.5 bg-current rounded-full transition-transform duration-300 origin-center"></span>
+    </div>
+    <span id="mobile-hud-label" class="tracking-wide text-[11px] font-semibold">01 // SOBRE MÍ</span>
+  </button>
+</aside>
+
+<!-- 2. Cortina Overlay a Pantalla Completa con Desenfoque Inmersivo -->
+<div
+  id="mobile-hud-overlay"
+  role="dialog"
+  aria-modal="true"
+  aria-label="Índice de secciones"
+  class="fixed inset-0 z-40 bg-canvas/95 backdrop-blur-2xl md:hidden opacity-0 pointer-events-none transition-all duration-300 flex flex-col justify-between p-6 pt-20"
+  style="clip-path: circle(0px at 40px 36px);"
+>
+  <div class="space-y-2">
+    <div class="text-[10px] font-mono text-accent-indigo tracking-widest uppercase mb-3">
+      // ÍNDICE DE NAVEGACIÓN [7 SECCIONES]
+    </div>
+
+    <nav class="flex flex-col divide-y divide-border-subtle">
+      {SECTIONS.map((sec) => (
+        <a
+          href={`#${sec.id}`}
+          data-mobile-target={sec.id}
+          data-mobile-idx={sec.idx}
+          data-mobile-label={sec.label}
+          class="mobile-nav-link py-3.5 flex items-center justify-between group text-lg font-bold tracking-tight text-content-primary active:text-accent-indigo transition-all cursor-pointer"
+        >
+          <div class="flex items-center gap-3">
+            <span class="font-mono text-xs text-accent-indigo font-semibold">{sec.idx}</span>
+            <span class="group-hover:translate-x-1 transition-transform">{sec.label}</span>
+          </div>
+          <span class="text-xs text-content-muted group-hover:text-accent-indigo transition-transform group-hover:translate-x-1 group-hover:-translate-y-1">↗</span>
+        </a>
+      ))}
+    </nav>
+  </div>
+
+  <!-- Telemetría en el pie de la cortina -->
+  <div class="pt-5 border-t border-border-subtle flex items-center justify-between text-[11px] font-mono text-content-muted">
+    <span class="flex items-center gap-2 font-medium">
+      <span class="w-2 h-2 rounded-full bg-accent-emerald animate-pulse"></span>
+      DISPONIBLE
+    </span>
+    <span class="text-[10px] opacity-75">SYS.26</span>
+  </div>
+</div>
+
+<script>
+  function initMobileHUD() {
+    const btn = document.getElementById('mobile-hud-btn') as HTMLButtonElement | null;
+    const overlay = document.getElementById('mobile-hud-overlay') as HTMLElement | null;
+    const label = document.getElementById('mobile-hud-label') as HTMLElement | null;
+    const barTop = document.getElementById('mobile-bar-top') as HTMLElement | null;
+    const barBot = document.getElementById('mobile-bar-bot') as HTMLElement | null;
+    const links = document.querySelectorAll('.mobile-nav-link');
+
+    if (!btn || !overlay || !label || !barTop || !barBot) return;
+
+    // Asignación con tipado no nulo tras la validación para asegurar el contexto en funciones anidadas
+    const navBtn: HTMLButtonElement = btn;
+    const navOverlay: HTMLElement = overlay;
+    const navLabel: HTMLElement = label;
+    const navBarTop: HTMLElement = barTop;
+    const navBarBot: HTMLElement = barBot;
+
+    let isOpen = false;
+
+    function openMenu() {
+      isOpen = true;
+      navBtn.setAttribute('aria-expanded', 'true');
+      navOverlay.classList.remove('pointer-events-none', 'opacity-0');
+      navOverlay.classList.add('pointer-events-auto', 'opacity-100');
+      navOverlay.style.clipPath = 'circle(150% at 40px 36px)';
+      document.body.style.overflow = 'hidden';
+
+      // Morphing icon to 'X'
+      navBarTop.style.transform = 'translateY(3.5px) rotate(45deg)';
+      navBarBot.style.transform = 'translateY(-3.5px) rotate(-45deg)';
+    }
+
+    function closeMenu() {
+      isOpen = false;
+      navBtn.setAttribute('aria-expanded', 'false');
+      navOverlay.classList.add('pointer-events-none', 'opacity-0');
+      navOverlay.classList.remove('pointer-events-auto', 'opacity-100');
+      navOverlay.style.clipPath = 'circle(0px at 40px 36px)';
+      document.body.style.overflow = '';
+
+      // Morphing icon back to parallel bars
+      navBarTop.style.transform = '';
+      navBarBot.style.transform = '';
+    }
+
+    navBtn.addEventListener('click', () => {
+      if (isOpen) closeMenu();
+      else openMenu();
+    });
+
+    // Tecla Escape para accesibilidad
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && isOpen) closeMenu();
+    });
+
+    // Cierre al hacer clic en cualquier sección y navegación suave
+    links.forEach((link) => {
+      link.addEventListener('click', (e) => {
+        const targetId = link.getAttribute('data-mobile-target');
+        const targetIdx = link.getAttribute('data-mobile-idx');
+        const targetLabel = link.getAttribute('data-mobile-label');
+
+        if (targetId && targetIdx && targetLabel) {
+          e.preventDefault();
+          closeMenu();
+          navLabel.textContent = `${targetIdx} // ${targetLabel}`;
+
+          const targetEl = document.getElementById(targetId);
+          if (targetEl) {
+            targetEl.scrollIntoView({ behavior: 'smooth' });
+          }
+        }
+      });
+    });
+
+    // Actualización de telemetría dinámica en scroll mediante IntersectionObserver
+    const sectionIds = ['about', 'work', 'education', 'projects', 'hackathons', 'blog', 'contact'];
+    const sectionMeta: Record<string, { idx: string; label: string }> = {
+      about: { idx: '01', label: 'SOBRE MÍ' },
+      work: { idx: '02', label: 'EXPERIENCIA' },
+      education: { idx: '03', label: 'EDUCACIÓN' },
+      projects: { idx: '04', label: 'PROYECTOS' },
+      hackathons: { idx: '05', label: 'HACKATHONS' },
+      blog: { idx: '06', label: 'BLOG' },
+      contact: { idx: '07', label: 'CONTACTO' },
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !isOpen) {
+            const secId = entry.target.id;
+            const meta = sectionMeta[secId];
+            if (meta) {
+              navLabel.textContent = `${meta.idx} // ${meta.label}`;
+            }
+          }
+        });
+      },
+      { threshold: 0.25 }
+    );
+
+    sectionIds.forEach((id) => {
+      const el = document.getElementById(id);
+      if (el) observer.observe(el);
+    });
+  }
+
+  // Carga inicial y soporte con Astro
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initMobileHUD);
+  } else {
+    initMobileHUD();
+  }
+  document.addEventListener('astro:page-load', initMobileHUD);
+</script>

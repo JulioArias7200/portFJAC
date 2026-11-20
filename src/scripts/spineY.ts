@@ -158,17 +158,30 @@ export function initSpineY(): () => void {
       });
     }
 
-    const rightEdge = vw - 58;
-    const railX = vw - 28;
-    const topBaseY = 72;
+    const isDark = !document.documentElement.classList.contains('light');
+    const computed = getComputedStyle(document.documentElement);
+    const tokenCyan = computed.getPropertyValue('--accent-cyan').trim() || (isDark ? '#06b6d4' : '#0284c7');
+    const tokenText = computed.getPropertyValue('--text-primary').trim() || (isDark ? '#cbd5e1' : '#0f172a');
+
+    const isTablet = vw >= 768 && vw < 1024;
+    const rightEdge = isTablet ? vw - 44 : vw - 48;
+    const railX = vw - 20; // Centro exacto del carril de 40px (w-10)
+    const topBaseY = isTablet ? 64 : 72;
     const bottomBaseY = vh - 36;
-    const stackStepY = 18;
+    const stackStepY = isTablet ? 15 : 18;
+
+    // Detección de proximidad al final del documento para acople suave de la última sección
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const maxScroll = Math.max(1, document.documentElement.scrollHeight - vh);
+    const remainingScroll = Math.max(0, maxScroll - scrollTop);
+    const bottomThreshold = Math.min(350, vh * 0.45);
+    const bottomBoost = clamp01((bottomThreshold - remainingScroll) / Math.max(1, bottomThreshold));
 
     // Calcular progreso continuo P in [0, 2] por sección:
     // P = 0.0 -> Pila inferior horizontal (0°, escala 0.46)
     // P = 1.0 -> Riel vertical (-90°, escala 0.58)
     // P = 2.0 -> Pila superior horizontal (0°, escala 0.46 / 1.0 activo)
-    const progresses = items.map((item) => {
+    const progresses = items.map((item, idx) => {
       if (!item.sectionEl) {
         item.sectionEl = document.getElementById(item.sec.id);
       }
@@ -186,7 +199,15 @@ export function initSpineY(): () => void {
       const stage2End = 80;
       const p2 = clamp01((stage2Start - rect.top) / Math.max(1, stage2Start - stage2End));
 
-      return p1 + p2;
+      const normalP = p1 + p2;
+      const isLastSection = idx === items.length - 1;
+
+      // Si es la última sección y se alcanza el fondo del scroll, se completa fluidamente a 2.0
+      if (isLastSection && bottomBoost > 0) {
+        return Math.max(normalP, lerp(normalP, 2.0, bottomBoost));
+      }
+
+      return normalP;
     });
 
     let cumulativeTopRows = 0;
@@ -219,7 +240,7 @@ export function initSpineY(): () => void {
       const railCenterY = vh * 0.58;
       const startRailY = railCenterY + totalRailH / 2;
 
-      const topHorizScale = lerp(SCALE_STACK, SCALE_ACTIVE, activeProminence);
+      const topHorizScale = lerp(SCALE_STACK, isTablet ? SCALE_ACTIVE * 0.82 : SCALE_ACTIVE, activeProminence);
       const totalTopW = item.totalWidth * topHorizScale;
       const startTopX = rightEdge - totalTopW;
 
@@ -293,16 +314,15 @@ export function initSpineY(): () => void {
 
         const swingGlow = P <= 1 ? Math.sin(t1 * Math.PI) * 0.45 : Math.sin(t2 * Math.PI) * 0.85;
         const isHighlight = activeProminence > 0.35;
-        const isDark = !document.documentElement.classList.contains('light');
 
         if (isHighlight) {
-          c.el.style.color = isDark ? '#38bdf8' : '#0284c7'; // Sky-400 neón en Dark / Sky-600 contrastado en Light
+          c.el.style.color = tokenCyan; // Token de acento centralizado
           c.el.style.opacity = '1';
           c.el.style.textShadow = isDark
-            ? '0 0 12px rgba(56, 189, 248, 0.6), 0 0 20px rgba(99, 102, 241, 0.4)'
+            ? '0 0 12px rgba(6, 182, 212, 0.6), 0 0 20px rgba(99, 102, 241, 0.4)'
             : '0 0 8px rgba(2, 132, 199, 0.25), 0 0 14px rgba(79, 70, 229, 0.2)';
         } else {
-          c.el.style.color = isDark ? '#cbd5e1' : '#0f172a'; // Slate-300 en Dark / Slate-900 nítido en Light
+          c.el.style.color = tokenText; // Token de texto centralizado
           c.el.style.textShadow = 'none';
           const alpha = isDark
             ? lerp(0.35, 0.85, Math.max(activeProminence, swingGlow))

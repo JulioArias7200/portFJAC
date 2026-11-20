@@ -30,40 +30,40 @@ const educationItems = [
 
 <section id="education" class="py-24 max-w-5xl mx-auto px-4 space-y-12">
   <div class="space-y-3">
-    <div class="text-xs font-mono font-semibold tracking-wider uppercase text-indigo-400">03 // Fundamentos & Formación</div>
-    <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-white">Educación & Certificaciones</h2>
-    <p class="text-xs sm:text-sm text-slate-400 max-w-xl">
+    <div class="text-xs font-mono font-semibold tracking-wider uppercase text-accent-indigo">03 // Fundamentos & Formación</div>
+    <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-content-primary">Educación & Certificaciones</h2>
+    <p class="text-xs sm:text-sm text-content-secondary max-w-xl">
       Base académica sólida combinada con actualización continua en tecnologías de vanguardia.
     </p>
   </div>
 
   <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
     {educationItems.map((item) => (
-      <div class="gsap-edu-card p-6 rounded-2xl bg-[#0f121e]/80 border border-white/10 hover:border-indigo-500/40 hover:-translate-y-1 transition-all duration-300 backdrop-blur-sm flex flex-col justify-between space-y-4 shadow-lg group">
+      <div class="gsap-edu-card p-6 rounded-2xl bg-surface border border-border-subtle hover:border-border-glow hover:-translate-y-1 transition-all duration-300 backdrop-blur-sm flex flex-col justify-between space-y-4 shadow-lg group">
         <div class="space-y-3">
           <div class="flex items-center justify-between">
-            <span class="text-[11px] font-mono text-indigo-400 bg-indigo-950/60 border border-indigo-500/30 px-2 py-0.5 rounded">
+            <span class="text-[11px] font-mono text-accent-indigo bg-surface-card border border-accent-indigo/30 px-2 py-0.5 rounded">
               {item.type}
             </span>
-            <span class="text-[11px] font-mono text-slate-400">{item.period}</span>
+            <span class="text-[11px] font-mono text-content-muted">{item.period}</span>
           </div>
 
-          <h3 class="text-base font-bold text-white group-hover:text-indigo-300 transition-colors">
+          <h3 class="text-base font-bold text-content-primary group-hover:text-accent-indigo transition-colors">
             {item.title}
           </h3>
 
-          <div class="text-xs font-medium text-cyan-400">
+          <div class="text-xs font-medium text-accent-cyan">
             {item.institution}
           </div>
 
-          <p class="text-xs text-slate-400 leading-relaxed">
+          <p class="text-xs text-content-secondary leading-relaxed">
             {item.detail}
           </p>
         </div>
 
-        <div class="pt-3 border-t border-white/5 flex items-center justify-between text-[11px] font-mono">
-          <span class="text-emerald-400 flex items-center gap-1.5">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+        <div class="pt-3 border-t border-border-subtle flex items-center justify-between text-[11px] font-mono">
+          <span class="text-accent-emerald flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-accent-emerald"></span>
             {item.badge}
           </span>
         </div>

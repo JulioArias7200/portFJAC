@@ -1,13 +1,13 @@
 ---
 // src/components/ui/FloatingThemeToggle.astro
-// Botón flotante desacoplado para alternar tema Dark/Light
+// Botón flotante responsive adaptado a móvil y riel de escritorio
 import { AnimatedThemeToggler } from '@/components/ui/animated-theme-toggler';
 ---
 
-<aside class="fixed top-5 right-16 z-50 pointer-events-auto" aria-label="Control de tema">
-    <AnimatedThemeToggler
-      client:load
-      variant="square"
-      className="w-10 h-10 flex items-center justify-center rounded-xl bg-transparent border-0 hover:bg-white/10 dark:hover:bg-white/10 light:hover:bg-slate-200/70 transition-colors cursor-pointer"
-    />
+<aside class="fixed top-4 right-4 md:top-5 md:right-12 z-50 pointer-events-auto" aria-label="Control de tema">
+  <AnimatedThemeToggler
+    client:load
+    variant="square"
+    className="w-10 h-10 flex items-center justify-center rounded-xl bg-transparent border-0 shadow-none hover:bg-white/10 dark:hover:bg-white/10 light:hover:bg-slate-200/70 transition-all cursor-pointer active:scale-90"
+  />
 </aside>

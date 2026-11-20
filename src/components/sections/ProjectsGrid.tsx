@@ -315,8 +315,8 @@ export function ProjectsGrid() {
               onClick={() => setActiveCategory(cat.id)}
               className={`px-4 py-2 rounded-xl transition-all active:scale-95 cursor-pointer font-semibold shadow-sm ${
                 isActive
-                  ? "bg-indigo-600 text-white shadow-indigo-600/30 border border-indigo-500/50"
-                  : "bg-slate-900/90 border border-white/10 text-slate-400 hover:text-white hover:border-white/20"
+                  ? "bg-btn-primary text-btn-primary-fg shadow-[var(--btn-primary-shadow)] border border-accent-indigo/50"
+                  : "bg-surface border border-border-subtle text-content-muted hover:text-content-primary hover:border-border-medium"
               }`}
             >
               {cat.label}

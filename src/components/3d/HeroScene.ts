@@ -110,12 +110,18 @@ export class HeroScene {
     if (!this.wireMesh || !this.nodesInstancedMesh) return;
 
     const dark = this.isDarkMode();
+    const computed = typeof window !== 'undefined' ? getComputedStyle(document.documentElement) : null;
+    const textPrimaryHex = computed?.getPropertyValue('--text-primary')?.trim();
+    const accentIndigoHex = computed?.getPropertyValue('--accent-indigo')?.trim();
 
-    // In Dark Mode: Crisp white lines and bright glowing spheres
-    // In Light Mode: Deep slate/indigo lines and vibrant indigo spheres for high contrast
-    const wireColor = dark ? 0xffffff : 0x334155;
+    // Sincronización dinámica con los tokens de theme.css
+    const wireColor = dark
+      ? (textPrimaryHex ? new THREE.Color(textPrimaryHex).getHex() : 0xffffff)
+      : 0x334155;
     const wireOpacity = dark ? 0.85 : 0.75;
-    const nodeColor = dark ? 0xffffff : 0x4f46e5;
+    const nodeColor = dark
+      ? 0xffffff
+      : (accentIndigoHex ? new THREE.Color(accentIndigoHex).getHex() : 0x4f46e5);
 
     const wireMat = this.wireMesh.material as THREE.LineBasicMaterial;
     wireMat.color.setHex(wireColor);

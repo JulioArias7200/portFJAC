@@ -1,0 +1,101 @@
+/* ==========================================================================
+   PORTFOLIO DESIGN TOKENS - FUENTE ÚNICA DE VERDAD DE COLOR
+   Modifica aquí los colores para que se actualicen automáticamente
+   en TODO el sitio web (fondos, textos, botones, bordes, líneas y rieles).
+   ========================================================================== */
+
+:root {
+  /* --------------------------------------------------------------------------
+     1. FONDOS Y SUPERFICIES (Modo Oscuro)
+     -------------------------------------------------------------------------- */
+  --bg-canvas: #090a0f;              /* Fondo base de toda la página */
+  --bg-surface: #0f121e;             /* Fondo de tarjetas, contenedores y paneles */
+  --bg-surface-card: #12141d;        /* Fondo interior de tarjetas Bento */
+  --bg-surface-elevated: #15192c;    /* Modales, menús flotantes, HUD */
+  --bg-input: rgba(2, 6, 23, 0.85);  /* Fondo de inputs y textareas */
+
+  /* --------------------------------------------------------------------------
+     2. TEXTOS Y TIPOGRAFÍA (Modo Oscuro)
+     -------------------------------------------------------------------------- */
+  --text-primary: #ffffff;           /* Títulos principales h1, h2, h3 y elementos destacados */
+  --text-secondary: #94a3b8;         /* Subtítulos, párrafos y descripciones (slate-400) */
+  --text-muted: #64748b;             /* Metadatos, fechas, notas secundarias (slate-500) */
+
+  /* --------------------------------------------------------------------------
+     3. BOTÓN PRIMARIO (Acción Principal / Call To Action)
+     -------------------------------------------------------------------------- */
+  --btn-primary-bg: #6366f1;         /* Fondo botón primario (indigo-600) */
+  --btn-primary-hover: #4f46e5;      /* Hover botón primario (indigo-700) */
+  --btn-primary-text: #ffffff;       /* Texto botón primario */
+  --btn-primary-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.35); /* Resplandor */
+
+  /* --------------------------------------------------------------------------
+     4. BOTÓN SECUNDARIO (Ghost / Vidrio / Outline)
+     -------------------------------------------------------------------------- */
+  --btn-secondary-bg: rgba(30, 41, 59, 0.75);    /* Fondo botón secundario (slate-800) */
+  --btn-secondary-hover: rgba(51, 65, 85, 0.85);  /* Hover botón secundario (slate-700) */
+  --btn-secondary-text: #e2e8f0;                 /* Texto botón secundario */
+  --btn-secondary-border: rgba(255, 255, 255, 0.12); /* Borde botón secundario */
+
+  /* --------------------------------------------------------------------------
+     5. LÍNEAS, BORDES Y RIELES
+     -------------------------------------------------------------------------- */
+  --border-subtle: rgba(255, 255, 255, 0.08);    /* Bordes suaves de tarjetas y divisores */
+  --border-medium: rgba(255, 255, 255, 0.16);    /* Bordes de badges e interactivos */
+  --border-glow: rgba(99, 102, 241, 0.45);       /* Borde con resplandor en hover */
+  --line-timeline: rgba(255, 255, 255, 0.12);    /* Línea vertical de experiencia */
+  --line-rail: rgba(255, 255, 255, 0.10);        /* Riel vertical lateral SpineY */
+
+  /* --------------------------------------------------------------------------
+     6. ACENTOS Y MARCA
+     -------------------------------------------------------------------------- */
+  --accent-indigo: #6366f1;          /* Acento principal */
+  --accent-cyan: #06b6d4;            /* Acento secundario y WebGL */
+  --accent-emerald: #10b981;         /* Métricas y estados activos */
+  --accent-amber: #f59e0b;           /* Premios y hackathones */
+  --accent-purple: #a855f7;          /* Acento AI y vector search */
+}
+
+/* ==========================================================================
+   PALETA EN MODO CLARO (Light Mode)
+   Se activa automáticamente cuando html tiene la clase 'light'
+   ========================================================================== */
+html.light {
+  /* 1. FONDOS Y SUPERFICIES (Modo Claro) */
+  --bg-canvas: #f8fafc;              /* Fondo claro general (slate-50) */
+  --bg-surface: #ffffff;             /* Fondo de tarjetas en blanco limpio */
+  --bg-surface-card: #f1f5f9;        /* Fondo interior de tarjetas Bento */
+  --bg-surface-elevated: #ffffff;    /* Modales, menús y HUD */
+  --bg-input: #f1f5f9;               /* Inputs en modo claro */
+
+  /* 2. TEXTOS Y TIPOGRAFÍA (Modo Claro) */
+  --text-primary: #0f172a;           /* Títulos en slate-900 oscuro y nítido */
+  --text-secondary: #334155;         /* Párrafos en slate-700 legibles */
+  --text-muted: #64748b;             /* Metadatos y notas */
+
+  /* 3. BOTÓN PRIMARIO (Modo Claro) */
+  --btn-primary-bg: #4f46e5;         /* Indigo vibrante de alto contraste */
+  --btn-primary-hover: #4338ca;      /* Hover más oscuro */
+  --btn-primary-text: #ffffff;
+  --btn-primary-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.25);
+
+  /* 4. BOTÓN SECUNDARIO (Modo Claro) */
+  --btn-secondary-bg: #ffffff;
+  --btn-secondary-hover: #f1f5f9;
+  --btn-secondary-text: #1e293b;
+  --btn-secondary-border: rgba(0, 0, 0, 0.12);
+
+  /* 5. LÍNEAS, BORDES Y RIELES (Modo Claro) */
+  --border-subtle: rgba(0, 0, 0, 0.08);
+  --border-medium: rgba(0, 0, 0, 0.14);
+  --border-glow: rgba(79, 70, 229, 0.35);
+  --line-timeline: rgba(0, 0, 0, 0.12);
+  --line-rail: rgba(0, 0, 0, 0.12);
+
+  /* 6. ACENTOS (Modo Claro - Contraste optimizado) */
+  --accent-indigo: #4f46e5;
+  --accent-cyan: #0284c7;
+  --accent-emerald: #059669;
+  --accent-amber: #d97706;
+  --accent-purple: #7e22ce;
+}
